@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Chaves Catraca | Ferramentas Completas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Industrial Grey & Accent Red -->
+    <!-- Application Structure Plan: A estrutura da página dedicada é vertical e detalhada, organizada para guiar o usuário através de informações aprofundadas sobre o jogo de chaves. Inclui: 1. Hero principal com imagem e CTA, 2. Seção de 'Sobre o Produto' para detalhes técnicos das peças, 3. 'Vantagens que Fazem a Diferença' com ícones e descrições sobre durabilidade e uso, 4. 'Escolha a Quantidade de Peças' (interativa), 5. 'A Versatilidade do Seu Jogo de Chaves' com o gráfico, 6. 'Dúvidas Frequentes' para esclarecer dúvidas, e 7. CTA final. Essa estrutura foi escolhida para fornecer um nível de detalhe que uma landing page não comportaria, respondendo a possíveis dúvidas e solidificando o valor do produto antes da compra, com ênfase na sua funcionalidade e abrangência. -->
+    <!-- Visualization & Content Choices:
+        - Report Info: Detalhes do produto (número de peças, tipo de chave, maleta) -> Goal: Informar -> Viz: Texto descritivo e lista -> Interaction: Nenhuma -> Justification: Fornece informações essenciais de forma clara sobre o conteúdo do kit. Library: HTML.
+        - Report Info: Benefícios do kit (durabilidade, organização, versatilidade) -> Goal: Informar/Persuadir -> Viz: Parágrafos descritivos com ícones -> Interaction: Nenhuma -> Justification: Expande os pontos chave das vantagens das ferramentas com mais detalhes. Library: Unicode/HTML.
+        - Report Info: Opções de 40 ou 46 peças -> Goal: Engajar/Explorar -> Viz: Botões de seleção de quantidade com atualização de texto -> Interaction: Clique para mudar o texto descritivo -> Justification: Permite que o usuário compare e selecione a opção que melhor se adequa à sua necessidade. Library: JS.
+        - Report Info: Versatilidade de uso do kit -> Goal: Educar/Motivar -> Viz: Gráfico Donut -> Interaction: Hover para detalhes -> Justification: Visualiza a abrangência de uso do kit de forma simples e motivadora. Library: Chart.js.
+        - Report Info: Dúvidas comuns (uso, material, manutenção) -> Goal: Suporte/Informar -> Viz: Seção de FAQ (Acordeão) -> Interaction: Clique para expandir/colapsar -> Justification: Responde proativamente a perguntas frequentes, construindo confiança. Library: JS.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            height: auto;
+            min-height: 300px;
+            max-height: 450px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                min-height: 380px;
+            }
+        }
+        .cta-button {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .cta-button:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.2), 0 5px 8px -2px rgba(0, 0, 0, 0.08);
+        }
+        .pieces-selector button.active {
+            transform: scale(1.05);
+            border-width: 3px;
+        }
+        .faq-item {
+            cursor: pointer;
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .faq-answer.open {
+            max-height: 200px; /* Adjust as needed for content length */
+            transition: max-height 0.5s ease-in;
+        }
+        .faq-icon {
+            transition: transform 0.3s ease;
+        }
+        .faq-icon.rotate {
+            transform: rotate(45deg);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header / Hero Section -->
+    <header class="bg-gradient-to-br from-gray-100 to-gray-50 py-12 md:py-20 px-4 text-center relative">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-12">
+            <div class="md:w-1/2 flex justify-center order-2 md:order-1">
+                <img src="https://res.cloudinary.com/du76scqem/image/upload/v1751125394/videoframe_1759_iugdf4.png" alt="Jogo de Chaves Catraca em Maleta" class="rounded-xl shadow-2xl w-full max-w-sm md:max-w-md lg:max-w-lg">
+            </div>
+            <div class="md:w-1/2 text-left order-1 md:order-2">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-4 leading-tight">
+                    Jogo de Chaves Catraca<br><span class="text-red-600">Sua Ferramenta Essencial Completa.</span>
+                </h1>
+                <p class="text-lg md:text-xl text-gray-700 mb-6 leading-relaxed">
+                    Um kit completo de 40 ou 46 peças com chave catraca reversível e soquetes, tudo organizado em uma maleta resistente. Tenha a ferramenta certa para cada tarefa.
+                </p>
+                <a href="https://s.shopee.com.br/2B3Ss7bNAr" target="_blank" class="cta-button inline-block bg-red-700 text-white font-bold rounded-full px-10 py-4 text-xl hover:bg-red-800 transition duration-300 ease-in-out transform hover:scale-105">
+                    Comprar Agora na Shopee
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- About the Product Section -->
+    <section class="py-16 md:py-24 px-4 bg-gray-50">
+        <div class="max-w-5xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8">Conheça o Jogo de Chaves Catraca</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 text-left">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4">Composição e Qualidade</h3>
+                    <p class="text-gray-600 mb-4">Este jogo de chaves catraca é a solução ideal para suas necessidades de montagem e manutenção. Cada peça é forjada em aço cromo vanádio de alta qualidade, garantindo durabilidade, resistência à corrosão e desempenho superior em diversas aplicações. A catraca reversível permite agilidade e precisão em qualquer sentido.</p>
+                    <ul class="list-disc list-inside text-gray-600 space-y-2">
+                        <li>Material: Aço Cromo Vanádio de alta resistência.</li>
+                        <li>Chave catraca reversível com mecanismo suave.</li>
+                        <li>Ampla variedade de soquetes (tamanhos diversos).</li>
+                        <li>Extensores e adaptadores inclusos.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4">Maleta Organizadora e Portabilidade</h3>
+                    <p class="text-gray-600 mb-4">Todas as peças vêm cuidadosamente organizadas em uma maleta robusta e compacta. Isso não só facilita o transporte para qualquer local de trabalho, como também protege suas ferramentas e evita a perda de componentes. Tenha sempre suas ferramentas organizadas e prontas para o uso, seja em casa, na oficina ou no carro.</p>
+                    <ul class="list-disc list-inside text-gray-600 space-y-2">
+                        <li>Maleta resistente e portátil.</li>
+                        <li>Encaixes perfeitos para cada ferramenta.</li>
+                        <li>Design compacto para fácil armazenamento.</li>
+                        <li>Protege contra impactos e poeira.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Advantages Section -->
+    <section class="py-16 md:py-24 px-4 bg-gray-100">
+        <div class="max-w-5xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-12">Vantagens que Fazem a Diferença</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 text-left">
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <div class="text-4xl mb-4 text-red-600">🛠️</div>
+                    <h3 class="text-xl font-bold mb-2">Versatilidade Imbatível</h3>
+                    <p class="text-gray-600">Lide com qualquer tipo de parafuso ou porca em reparos domésticos, manutenção automotiva ou projetos de hobby. Um kit para todas as suas necessidades.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <div class="text-4xl mb-4 text-red-600">🔩</div>
+                    <h3 class="text-xl font-bold mb-2">Durabilidade Profissional</h3>
+                    <p class="text-gray-600">Fabricado em aço cromo vanádio de alta resistência, este jogo é feito para suportar uso intenso e durar por muitos anos, mesmo em ambientes exigentes.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <div class="text-4xl mb-4 text-red-600">📦</div>
+                    <h3 class="text-xl font-bold mb-2">Organização Perfeita</h3>
+                    <p class="text-gray-600">A maleta compacta e resistente mantém todas as 40 ou 46 peças organizadas, protegidas e facilmente acessíveis. Nunca mais perca um soquete!</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <div class="text-4xl mb-4 text-red-600">⚡</div>
+                    <h3 class="text-xl font-bold mb-2">Agilidade e Precisão</h3>
+                    <p class="text-gray-600">O mecanismo de catraca reversível permite apertar ou soltar parafusos com rapidez e precisão, otimizando seu tempo e esforço em qualquer trabalho.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <div class="text-4xl mb-4 text-red-600">🛠️</div> <!-- Changed icon for better representation -->
+                    <h3 class="text-xl font-bold mb-2">Conforto no Manuseio</h3>
+                    <p class="text-gray-600">Os cabos das ferramentas são projetados ergonomicamente para proporcionar uma pegada firme e confortável, reduzindo a fadiga em usos prolongados.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                    <div class="text-4xl mb-4 text-red-600">🎯</div>
+                    <h3 class="text-xl font-bold mb-2">Completo para Qualquer Tarefa</h3>
+                    <p class="text-gray-600">Seja a versão de 40 ou 46 peças, você terá um arsenal completo de soquetes e acessórios para lidar com uma vasta gama de reparos e projetos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pieces Selector Section (Interactive) -->
+    <section class="py-16 md:py-24 bg-gray-50">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Escolha a Quantidade de Peças Ideal</h2>
+            <p class="text-lg text-gray-600 mb-10">Selecione a opção que melhor se adapta às suas necessidades de trabalho.</p>
+            <div id="pieces-selector" class="pieces-selector flex justify-center items-center gap-6 mb-6 flex-wrap">
+                <button data-pieces="40" class="px-8 py-3 rounded-full bg-red-600 text-white font-bold border-2 border-transparent focus:outline-none transition-transform duration-200 active">40 Peças</button>
+                <button data-pieces="46" class="px-8 py-3 rounded-full bg-gray-300 text-gray-800 font-bold border-2 border-transparent focus:outline-none transition-transform duration-200">46 Peças</button>
+            </div>
+            <div id="pieces-details" class="mt-4 text-xl font-semibold text-red-700 h-8">
+                Opção de 40 Peças: Perfeito para reparos gerais e uso doméstico.
+            </div>
+        </div>
+    </section>
+
+    <!-- Versatility Chart Section -->
+    <section class="py-16 md:py-24 bg-gray-100">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">A Versatilidade do Seu Jogo de Chaves</h2>
+            <p class="text-lg text-gray-600 mb-10">Este kit é a sua solução para uma variedade de tarefas. Veja como ele se distribui entre os usos mais comuns:</p>
+            <div class="chart-container">
+                <canvas id="versatilityChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-16 md:py-24 bg-gray-50">
+        <div class="max-w-4xl mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-10 text-center">Dúvidas Frequentes</h2>
+            <div id="faq-container" class="space-y-4">
+                <div class="faq-item bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex justify-between items-center cursor-pointer">
+                        <h3 class="text-xl font-semibold text-gray-700">Qual a diferença entre 40 e 46 peças?</h3>
+                        <span class="faq-icon text-2xl text-red-600">+</span>
+                    </div>
+                    <div class="faq-answer mt-4 text-gray-600">
+                        <p>A versão de 46 peças inclui soquetes adicionais ou ferramentas especiais que expandem a versatilidade do kit, sendo ideal para quem precisa de mais opções para trabalhos específicos ou mais complexos.</p>
+                    </div>
+                </div>
+                <div class="faq-item bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex justify-between items-center cursor-pointer">
+                        <h3 class="text-xl font-semibold text-gray-700">As chaves são resistentes à ferrugem?</h3>
+                        <span class="faq-icon text-2xl text-red-600">+</span>
+                    </div>
+                    <div class="faq-answer mt-4 text-gray-600">
+                        <p>Sim, as ferramentas são fabricadas em aço cromo vanádio, um material conhecido por sua alta resistência à corrosão e durabilidade, garantindo que o kit mantenha sua qualidade por muito tempo.</p>
+                    </div>
+                </div>
+                <div class="faq-item bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex justify-between items-center cursor-pointer">
+                        <h3 class="text-xl font-semibold text-gray-700">É adequado para uso profissional?</h3>
+                        <span class="faq-icon text-2xl text-red-600">+</span>
+                    </div>
+                    <div class="faq-answer mt-4 text-gray-600">
+                        <p>Com sua construção robusta e variedade de peças, este jogo de chaves é amplamente utilizado tanto por entusiastas do "faça você mesmo" quanto por profissionais que buscam qualidade e praticidade em suas tarefas diárias.</p>
+                    </div>
+                </div>
+                <div class="faq-item bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex justify-between items-center cursor-pointer">
+                        <h3 class="text-xl font-semibold text-gray-700">Como faço a manutenção do kit?</h3>
+                        <span class="faq-icon text-2xl text-red-600">+</span>
+                    </div>
+                    <div class="faq-answer mt-4 text-gray-600">
+                        <p>Após o uso, limpe as ferramentas para remover sujeira ou graxa. Armazene-as na maleta em local seco para proteger contra umidade. Uma leve lubrificação periódica da catraca pode prolongar sua vida útil.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final Call to Action Section -->
+    <section class="bg-red-700 text-white">
+        <div class="max-w-4xl mx-auto py-16 md:py-20 px-4 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Equipe-se com a Ferramenta Certa!</h2>
+            <p class="text-lg md:text-xl opacity-90 max-w-2xl mx-auto mb-8">Tenha sempre o kit completo e organizado para qualquer desafio. Sua caixa de ferramentas nunca mais será a mesma.</p>
+            <a href="https://s.shopee.com.br/2B3Ss7bNAr" target="_blank" class="cta-button inline-block bg-white text-red-800 font-bold rounded-full px-12 py-5 text-xl hover:bg-red-100 transition duration-300 ease-in-out transform hover:scale-105">
+                Comprar Meu Jogo de Chaves!
+            </a>
+        </div>
+    </section>
+
+    <footer class="text-center py-6 bg-gray-50">
+        <p class="text-gray-500 text-sm">&copy; 2025 Ferramentas Essenciais. Todos os direitos reservados. *Ferramentas à mão, projetos concluídos.*</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Pieces Selector Logic
+            const piecesSelector = document.getElementById('pieces-selector');
+            const piecesDetails = document.getElementById('pieces-details');
+            const pieceDescriptions = {
+                "40": "Perfeito para reparos gerais e uso doméstico, oferecendo o essencial com qualidade.",
+                "46": "Com peças adicionais, ideal para trabalhos mais complexos e uma gama ainda maior de aplicações."
+            };
+            const buttons = piecesSelector.querySelectorAll('button');
+
+            piecesSelector.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    buttons.forEach(btn => {
+                        btn.classList.remove('active');
+                        btn.style.borderColor = 'transparent';
+                        btn.classList.remove('bg-red-600', 'text-white');
+                        btn.classList.add('bg-gray-300', 'text-gray-800');
+                    });
+                    
+                    e.target.classList.add('active');
+                    e.target.style.borderColor = '#DC2626'; /* Cor de borda para ativo: vermelho-600 */
+                    e.target.classList.remove('bg-gray-300', 'text-gray-800');
+                    e.target.classList.add('bg-red-600', 'text-white');
+                    
+                    const numPieces = e.target.dataset.pieces;
+                    piecesDetails.textContent = `Opção de ${numPieces} Peças: ${pieceDescriptions[numPieces]}`;
+                }
+            });
+
+            // Chart.js Logic
+            const ctx = document.getElementById('versatilityChart').getContext('2d');
+            const versatilityChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Reparos Domésticos (40%)', 'Manutenção Automotiva (30%)', 'Projetos DIY (20%)', 'Outros (10%)'],
+                    datasets: [{
+                        label: 'Usos do Jogo de Chaves',
+                        data: [40, 30, 20, 10],
+                        backgroundColor: [
+                            'rgba(220, 38, 38, 0.8)',  // Red-600
+                            'rgba(75, 85, 99, 0.8)',   // Gray-700
+                            'rgba(156, 163, 175, 0.8)', // Gray-400
+                            'rgba(209, 213, 219, 0.5)'  // Gray-300
+                        ],
+                        borderColor: [
+                            'rgba(220, 38, 38, 1)',
+                            'rgba(75, 85, 99, 1)',
+                            'rgba(156, 163, 175, 1)',
+                            'rgba(209, 213, 219, 1)'
+                        ],
+                        borderWidth: 1,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        tooltip: {
+                            enabled: true,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed + '%';
+                                    }
+                                    return label;
+                                }
+                            }
+                        },
+                        title: {
+                           display: true,
+                           text: 'Distribuição de Usos Comuns do Kit (%)',
+                           font: {
+                               size: 18,
+                               weight: 'bold'
+                           },
+                           padding: {
+                               top: 10,
+                               bottom: 20
+                           }
+                        }
+                    }
+                }
+            });
+
+            // FAQ Accordion Logic
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            faqItems.forEach(item => {
+                const header = item.querySelector('.cursor-pointer');
+                const answer = item.querySelector('.faq-answer');
+                const icon = item.querySelector('.faq-icon');
+
+                header.addEventListener('click', () => {
+                    // Close all other open answers
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.querySelector('.faq-answer').classList.remove('open');
+                            otherItem.querySelector('.faq-icon').classList.remove('rotate');
+                        }
+                    });
+
+                    // Toggle current item
+                    answer.classList.toggle('open');
+                    icon.classList.toggle('rotate');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
